@@ -6,7 +6,13 @@
 package com.muqui.corona.dao;
 
 import com.muqui.corona.model.Partido;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -57,6 +63,14 @@ public class RestDaoImpl implements RestDao {
 
     public Partido insertar(Partido partido) {
        Session session = this.sessionFactory.getCurrentSession();
+       Date fecha = null;
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            fecha = df.parse(partido.getFechaTemporal());
+        } catch (ParseException ex) {
+            Logger.getLogger(RestDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        partido.setFecha(fecha);
         session.persist(partido);
         return  partido;
     }
