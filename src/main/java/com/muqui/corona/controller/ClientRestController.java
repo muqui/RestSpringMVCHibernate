@@ -8,7 +8,9 @@ package com.muqui.corona.controller;
 import com.muqui.corona.model.Partido;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -39,6 +41,24 @@ public class ClientRestController {
         Partido partido = entity.getBody();
         model.addAttribute("partido", partido);
         return "inicio";
+    }
+      /*
+        Get Partidos
+        
+     */
+    @RequestMapping(value = "/clientGetPartidos", method = RequestMethod.GET)
+    public String getPartidoID(ModelMap model) throws URISyntaxException {
+       List<Partido> partidos;
+        RestTemplate restTemplate = new RestTemplate();
+        String getUrl = "http://localhost:8080/partidos";
+        //ResponseEntity<List<Partido>> entity = restTemplate.getForEntity(new URI(getUrl), Partido.class);
+        ResponseEntity<Partido[]> entity = restTemplate.getForEntity(new URI(getUrl), Partido[].class);
+        HttpStatus statusCode = entity.getStatusCode();
+       // Partido[] partidos = entity.getBody();
+       partidos = Arrays.asList(entity.getBody());
+        System.out.println("sfhjfhsjfhsdPartidos " + partidos);
+        model.addAttribute("partido", partidos);
+        return "partidos";
     }
 
     /*
@@ -73,7 +93,11 @@ public class ClientRestController {
 
         return "insertar";
     }
-
+  /*
+        Update Partido
+        
+     */
+    
     @RequestMapping(value = "/clientUpdatePartido/{id}", method = RequestMethod.GET)
     public String updatePartidoID(ModelMap model, @PathVariable("id") int id) throws URISyntaxException {
         RestTemplate restTemplate = new RestTemplate();

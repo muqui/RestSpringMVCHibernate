@@ -52,19 +52,18 @@ public class RestDaoImpl implements RestDao {
         Partido partido = partidobyId(id);
         Session session = this.sessionFactory.getCurrentSession();
         if (partido != null) {
-             session.delete(partido);
-             return id;
+            session.delete(partido);
+            return id;
+        } else {
+            return null;
         }
-        else{
-        return null;
-        }
-       
+
     }
 
     public Partido insertar(Partido partido) {
-       Session session = this.sessionFactory.getCurrentSession();
-       Date fecha = null;
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Session session = this.sessionFactory.getCurrentSession();
+        Date fecha = null;
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         try {
             fecha = df.parse(partido.getFechaTemporal());
         } catch (ParseException ex) {
@@ -72,23 +71,31 @@ public class RestDaoImpl implements RestDao {
         }
         partido.setFecha(fecha);
         session.persist(partido);
-        return  partido;
+        return partido;
     }
 
     public Partido update(Integer id, Partido partido) {
-         Session session = this.sessionFactory.getCurrentSession();
-       partido.setId(id);
-       session.update(partido);      
+        Session session = this.sessionFactory.getCurrentSession();
+        Date fecha = null;
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            fecha = df.parse(partido.getFechaTemporal());
+        } catch (ParseException ex) {
+            Logger.getLogger(RestDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        partido.setFecha(fecha);
+        partido.setId(id);
+        session.update(partido);
         return partido;
     }
 
     public List<Partido> partidos() {
-         Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.sessionFactory.getCurrentSession();
         Query query = session.createQuery("from Partido");
-        
+
         List<?> list = query.list();
         if (list.size() > 0) {
-           
+
             return (List<Partido>) list;
         } else {
             return null;
